@@ -6,7 +6,7 @@ export class AppProvider extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			page: 'settings',
+			page: 'dashboard',
 			setPage: this.setPage
 		};
 	}

@@ -16,7 +16,7 @@ const ControlButtonElem = styled.div`
 	${props =>
 		props.active &&
 		css`
-			text-shadow: 0px 0px 60px #03ff03;
+			text-shadow: 0px 0px 10px #03ff03, 0px 0px 25px #03ff03;
 		`}
 	cursor: pointer;
 `;
