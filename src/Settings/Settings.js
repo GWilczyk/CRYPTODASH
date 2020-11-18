@@ -2,6 +2,7 @@ import React from 'react';
 import Page from '../Shared/Page';
 import WelcomeMessage from './WelcomeMessage';
 import ConfirmButton from './ConfirmButton';
+import Search from './Search';
 import CoinGrid from './CoinGrid';
 
 function Settings() {
@@ -10,6 +11,7 @@ function Settings() {
 			<WelcomeMessage />
 			<CoinGrid topSection />
 			<ConfirmButton />
+			<Search />
 			<CoinGrid />
 		</Page>
 	);
