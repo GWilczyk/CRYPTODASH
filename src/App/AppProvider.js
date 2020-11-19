@@ -16,9 +16,9 @@ export class AppProvider extends Component {
 			...this.savedSettings(),
 			setPage: this.setPage,
 			addCoin: this.addCoin,
-			removeCoin: this.removeCoin,
-			isInFavorites: this.isInFavorites,
 			confirmFavorites: this.confirmFavorites,
+			isInFavorites: this.isInFavorites,
+			removeCoin: this.removeCoin,
 			setFilteredCoins: this.setFilteredCoins
 		};
 	}
@@ -31,18 +31,16 @@ export class AppProvider extends Component {
 		}
 	};
 
-	removeCoin = key => {
-		let favorites = [...this.state.favorites];
-		this.setState({ favorites: _.pull(favorites, key) });
-	};
-
-	isInFavorites = key => _.includes(this.state.favorites, key);
-
 	confirmFavorites = () => {
-		this.setState({
-			firstVisit: false,
-			page: 'dashboard'
-		});
+		this.setState(
+			{
+				firstVisit: false,
+				page: 'dashboard'
+			},
+			() => {
+				this.fetchPrices();
+			}
+		);
 		localStorage.setItem(
 			'cryptoDash',
 			JSON.stringify({
@@ -54,6 +52,36 @@ export class AppProvider extends Component {
 	fetchCoins = async () => {
 		let coinList = (await cc.coinList()).Data;
 		this.setState({ coinList });
+	};
+
+	fetchPrices = async () => {
+		if (this.state.firstVisit) {
+			return;
+		}
+		let prices = await this.prices();
+		prices = prices.filter(price => Object.keys(price).length);
+		console.log('prices: ', prices);
+		this.setState({ prices });
+	};
+
+	isInFavorites = key => _.includes(this.state.favorites, key);
+
+	prices = async () => {
+		let returnData = [];
+		for (let i = 0, l = this.state.favorites.length; i < l; i++) {
+			try {
+				let priceData = await cc.priceFull(this.state.favorites[i], 'USD');
+				returnData.push(priceData);
+			} catch (error) {
+				console.warn('Fetch price error: ', error);
+			}
+		}
+		return returnData;
+	};
+
+	removeCoin = key => {
+		let favorites = [...this.state.favorites];
+		this.setState({ favorites: _.pull(favorites, key) });
 	};
 
 	savedSettings() {
@@ -71,6 +99,7 @@ export class AppProvider extends Component {
 
 	componentDidMount() {
 		this.fetchCoins();
+		this.fetchPrices();
 	}
 
 	render() {
