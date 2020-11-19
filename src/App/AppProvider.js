@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 
 const cc = require('cryptocompare');
+cc.setApiKey(process.env.REACT_APP_CRYPTOCOMPARE_API_KEY);
 const MAX_FAVORITES = 10;
 
 export const AppContext = React.createContext();
@@ -17,7 +18,8 @@ export class AppProvider extends Component {
 			addCoin: this.addCoin,
 			removeCoin: this.removeCoin,
 			isInFavorites: this.isInFavorites,
-			confirmFavorites: this.confirmFavorites
+			confirmFavorites: this.confirmFavorites,
+			setFilteredCoins: this.setFilteredCoins
 		};
 	}
 
@@ -62,6 +64,8 @@ export class AppProvider extends Component {
 		let { favorites } = cryptoDashData;
 		return { favorites };
 	}
+
+	setFilteredCoins = filteredCoins => this.setState({ filteredCoins });
 
 	setPage = page => this.setState({ page });
 
