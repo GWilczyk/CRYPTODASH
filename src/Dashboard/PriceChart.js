@@ -4,6 +4,8 @@ import { AppContext } from '../App/AppProvider';
 import ReactHighcharts from 'react-highcharts';
 
 import HighchartsConfig from './HighchartsConfig';
+import HighchartsTheme from './HighchartsTheme';
+ReactHighcharts.Highcharts.setOptions(HighchartsTheme);
 
 const PriceChart = () => {
 	return (
