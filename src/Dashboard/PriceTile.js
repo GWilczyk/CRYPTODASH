@@ -1,8 +1,9 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { CoinHeaderGridStyled } from '../Settings/CoinHeaderGrid';
-import { fontSize3, fontSizeBig } from '../Shared/Styles';
+import { fontSize3, fontSizeBig, greenBoxShadow } from '../Shared/Styles';
 import { SelectableTile } from '../Shared/Tile';
+import { AppContext } from '../App/AppProvider';
 
 const JustifyLeft = styled.div`
 	justify-self: left;
@@ -51,11 +52,26 @@ const PriceTileStyled = styled(SelectableTile)`
 			${fontSize3}
 			justify-items: right;
 		`}
+
+	${props =>
+		props.currentFavorite &&
+		css`
+			${greenBoxShadow};
+			pointer-events: none;
+		`}
 `;
 
-const PriceTileContent = ({ sym, data }) => {
+const PriceTileContent = ({
+	sym,
+	data,
+	currentFavorite,
+	setCurrentFavorite
+}) => {
 	return (
-		<PriceTileStyled>
+		<PriceTileStyled
+			currentFavorite={currentFavorite}
+			onClick={setCurrentFavorite}
+		>
 			<CoinHeaderGridStyled>
 				<div> {sym} </div>
 				<ChangePercentage data={data} />
@@ -65,9 +81,18 @@ const PriceTileContent = ({ sym, data }) => {
 	);
 };
 
-const PriceTileCompact = ({ sym, data }) => {
+const PriceTileCompact = ({
+	sym,
+	data,
+	currentFavorite,
+	setCurrentFavorite
+}) => {
 	return (
-		<PriceTileStyled compact>
+		<PriceTileStyled
+			compact
+			currentFavorite={currentFavorite}
+			onClick={setCurrentFavorite}
+		>
 			<JustifyLeft> {sym} </JustifyLeft>
 			<ChangePercentage data={data} />
 			<div>${numberFormat(data.PRICE)}</div>
@@ -79,7 +104,18 @@ const PriceTile = ({ price, index }) => {
 	let sym = Object.keys(price)[0];
 	let data = price[sym]['USD'];
 	let TileClass = index < 5 ? PriceTileContent : PriceTileCompact;
-	return <TileClass sym={sym} data={data} />;
+	return (
+		<AppContext.Consumer>
+			{({ currentFavorite, setCurrentFavorite }) => (
+				<TileClass
+					sym={sym}
+					data={data}
+					currentFavorite={currentFavorite === sym}
+					setCurrentFavorite={() => setCurrentFavorite(sym)}
+				/>
+			)}
+		</AppContext.Consumer>
+	);
 };
 
 export default PriceTile;
