@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
+import moment from 'moment';
 
 const cc = require('cryptocompare');
 cc.setApiKey(process.env.REACT_APP_CRYPTOCOMPARE_API_KEY);
+
 const MAX_FAVORITES = 10;
+const TIME_UNITS = 10;
 
 export const AppContext = React.createContext();
 
@@ -38,10 +41,13 @@ export class AppProvider extends Component {
 			{
 				firstVisit: false,
 				page: 'dashboard',
-				currentFavorite
+				currentFavorite,
+				prices: null,
+				historical: null
 			},
 			() => {
 				this.fetchPrices();
+				this.fetchHistorical();
 			}
 		);
 		localStorage.setItem(
@@ -58,14 +64,46 @@ export class AppProvider extends Component {
 		this.setState({ coinList });
 	};
 
+	fetchHistorical = async () => {
+		if (this.state.firstVisit) {
+			return;
+		}
+		let results = await this.historical();
+		let historical = [
+			{
+				name: this.state.currentFavorite,
+				data: results.map((ticker, index) => [
+					moment()
+						.subtract({ months: TIME_UNITS - index })
+						.valueOf(),
+					ticker.USD
+				])
+			}
+		];
+		this.setState({ historical });
+	};
+
 	fetchPrices = async () => {
 		if (this.state.firstVisit) {
 			return;
 		}
 		let prices = await this.prices();
 		prices = prices.filter(price => Object.keys(price).length);
-		console.log('prices: ', prices);
 		this.setState({ prices });
+	};
+
+	historical = () => {
+		let promises = [];
+		for (let units = TIME_UNITS; units > 0; units--) {
+			promises.push(
+				cc.priceHistorical(
+					this.state.currentFavorite,
+					['USD'],
+					moment().subtract({ months: units }).toDate()
+				)
+			);
+		}
+		return Promise.all(promises);
 	};
 
 	isInFavorites = key => _.includes(this.state.favorites, key);
@@ -98,7 +136,10 @@ export class AppProvider extends Component {
 	}
 
 	setCurrentFavorite = sym => {
-		this.setState({ currentFavorite: sym });
+		this.setState(
+			{ currentFavorite: sym, historical: null },
+			this.fetchHistorical
+		);
 		localStorage.setItem(
 			'cryptoDash',
 			JSON.stringify({
@@ -115,6 +156,7 @@ export class AppProvider extends Component {
 	componentDidMount() {
 		this.fetchCoins();
 		this.fetchPrices();
+		this.fetchHistorical();
 	}
 
 	render() {
