@@ -19,11 +19,13 @@ export class AppProvider extends Component {
 			...this.savedSettings(),
 			setPage: this.setPage,
 			addCoin: this.addCoin,
+			changeChartSelect: this.changeChartSelect,
 			confirmFavorites: this.confirmFavorites,
 			isInFavorites: this.isInFavorites,
 			removeCoin: this.removeCoin,
 			setCurrentFavorite: this.setCurrentFavorite,
-			setFilteredCoins: this.setFilteredCoins
+			setFilteredCoins: this.setFilteredCoins,
+			timeInterval: 'months'
 		};
 	}
 
@@ -33,6 +35,13 @@ export class AppProvider extends Component {
 			favorites.push(key);
 			this.setState({ favorites });
 		}
+	};
+
+	changeChartSelect = value => {
+		this.setState(
+			{ timeInterval: value, historical: null },
+			this.fetchHistorical
+		);
 	};
 
 	confirmFavorites = () => {
@@ -74,7 +83,7 @@ export class AppProvider extends Component {
 				name: this.state.currentFavorite,
 				data: results.map((ticker, index) => [
 					moment()
-						.subtract({ months: TIME_UNITS - index })
+						.subtract({ [this.state.timeInterval]: TIME_UNITS - index })
 						.valueOf(),
 					ticker.USD
 				])
@@ -99,7 +108,9 @@ export class AppProvider extends Component {
 				cc.priceHistorical(
 					this.state.currentFavorite,
 					['USD'],
-					moment().subtract({ months: units }).toDate()
+					moment()
+						.subtract({ [this.state.timeInterval]: units })
+						.toDate()
 				)
 			);
 		}
