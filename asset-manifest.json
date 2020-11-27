@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/CRYPTODASH/static/css/main.0fcd60cb.chunk.css",
+    "main.js": "/CRYPTODASH/static/js/main.de14215b.chunk.js",
+    "main.js.map": "/CRYPTODASH/static/js/main.de14215b.chunk.js.map",
+    "runtime-main.js": "/CRYPTODASH/static/js/runtime-main.d07b168e.js",
+    "runtime-main.js.map": "/CRYPTODASH/static/js/runtime-main.d07b168e.js.map",
+    "static/js/2.74d7e383.chunk.js": "/CRYPTODASH/static/js/2.74d7e383.chunk.js",
+    "static/js/2.74d7e383.chunk.js.map": "/CRYPTODASH/static/js/2.74d7e383.chunk.js.map",
+    "static/js/3.f5871abf.chunk.js": "/CRYPTODASH/static/js/3.f5871abf.chunk.js",
+    "static/js/3.f5871abf.chunk.js.map": "/CRYPTODASH/static/js/3.f5871abf.chunk.js.map",
+    "index.html": "/CRYPTODASH/index.html",
+    "static/css/main.0fcd60cb.chunk.css.map": "/CRYPTODASH/static/css/main.0fcd60cb.chunk.css.map",
+    "static/js/2.74d7e383.chunk.js.LICENSE.txt": "/CRYPTODASH/static/js/2.74d7e383.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.d07b168e.js",
+    "static/js/2.74d7e383.chunk.js",
+    "static/css/main.0fcd60cb.chunk.css",
+    "static/js/main.de14215b.chunk.js"
+  ]
+}
